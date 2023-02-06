@@ -1,6 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import "./App.css";
+import { OrbitControls } from "@react-three/drei";
+import { Model } from "./components/ClownFishComponent";
 
 function Sphere(props) {
   let time = Math.random() * 100;
@@ -22,27 +24,18 @@ function Sphere(props) {
       />
     </mesh>
   );
-  f;
 }
 
 function App() {
   return (
     <div className="main">
       <Canvas camera={{ position: [0, 17, 55], fov: 75 }}>
+        <OrbitControls />
         <pointLight position={[30, 60, 50]} color={[1, 1, 1]} />
-        <ambientLight color={[0.1, 0.1, 0.1]} />
-
-        {new Array(10).fill(0).map((el, ind) => (
-          <Sphere
-            key={ind}
-            position={[
-              (Math.random() - 0.5) * 30,
-              (Math.random() - 0.5) * 30,
-              (Math.random() - 0.5) * 30,
-            ]}
-            opacity={0.7}
-          />
-        ))}
+        <ambientLight color={[1, 1, 1]} intensity={0.05} />
+        <Suspense fallback={null}>
+          <Model scale={1} position={[0, 0, 0]} rotation={[0, 3.14 / 4, 0]} />
+        </Suspense>
       </Canvas>
     </div>
   );
