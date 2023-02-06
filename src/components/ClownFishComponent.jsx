@@ -1,24 +1,40 @@
 import React, { useEffect, useRef } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 
 export function Model(props) {
   const group = useRef();
-  const { nodes, materials, animations } = useGLTF("/assets/clownFish.glb");
+  const { nodes, materials, animations } = useGLTF(
+    import.meta.env.BASE_URL + "assets/clownFish.glb"
+  );
   const { actions, names } = useAnimations(animations, group);
 
   // useEffect(() => {
   //   // names = "idle", "swim", "turningR", "turningL", "bite"
   //   let ind = 1;
   //   actions[names[ind]].reset().fadeIn(1).play();
-  //   return () => actions[names[ind]].fadeOut(1);
+  //   // return () => actions[names[ind]].fadeOut(1);
   // }, [actions, names]);
 
   useEffect(() => {
     // names = "idle", "swim", "turningR", "turningL", "bite"
     let ind = 0;
     actions[names[ind]].reset().play();
-    return () => actions[names[ind]];
+    // return () => actions[names[ind]];
   }, [actions, names]);
+
+  // useFrame((state, delta) => {
+  //   group.current.rotation.x = props.dir[0] * 3.141;
+  //   group.current.rotation.y = props.dir[1] * 3.141;
+  //   group.current.rotation.z = props.dir[2] * 3.141;
+  //   props.setPos((prev) => {
+  //     return [
+  //       prev[0] + delta * props.dir[0],
+  //       prev[1] + delta * props.dir[1],
+  //       prev[2] + delta * props.dir[2],
+  //     ];
+  //   });
+  // });
 
   return (
     <group ref={group} {...props} dispose={null}>
@@ -59,4 +75,4 @@ export function Model(props) {
   );
 }
 
-useGLTF.preload("/assets/clownFish.glb");
+useGLTF.preload(import.meta.env.BASE_URL + "assets/clownFish.glb");
