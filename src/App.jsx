@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import "./App.css";
 import { OrbitControls } from "@react-three/drei";
-import { Model } from "./components/ClownFishComponent";
+import { ClownFishModel } from "./components/ClownFishComponent";
+// import { GrayFishModel } from "./components/GrayFishComponent";
 import { DoubleSide } from "three";
 
 function Sphere(props) {
@@ -41,8 +42,8 @@ function Box(props) {
         color={props.color}
         opacity={props.opacity || 1}
         transparent={props.opacity ? true : false}
-        metalness={0.9}
-        roughness={0.9}
+        metalness={0.7}
+        roughness={1}
         depthWrite={false}
       />
     </mesh>
@@ -76,60 +77,70 @@ function Plane(props) {
 }
 
 function App() {
-  const [pos, setPos] = useState([0, 0, 0]);
+  // const [pos, setPos] = useState([0, 0, 0]);
 
   return (
     <div className="main">
       <Canvas camera={{ position: [0, 17, 55], fov: 75 }}>
         <OrbitControls />
         <pointLight
-          position={[90, 100, 50]}
+          position={[10, 30, 10]}
           color={[1, 1, 1]}
-          intensity={0.2}
+          intensity={0.5}
+          castShadow
         />
         <ambientLight color={[1, 1, 1]} intensity={0.5} />
+
         <Suspense fallback={null}>
-          <Model
-            scale={0.2}
-            position={pos}
-            setPos={setPos}
-            rotation={[0, 3.141 / 2, 0]}
-            dir={[0.5, 0, 0.5]}
-            // opacity={1}
-          />
+          {new Array(20).fill(0).map((el, ind) => {
+            return (
+              <ClownFishModel
+                scale={0.15}
+                position={[
+                  25 * (Math.random() - 0.5),
+                  15 * (Math.random() - 0.5),
+                  15 * (Math.random() - 0.5),
+                ]}
+                rotation={[0, 3.1415 * Math.random(), 0]}
+                dir={[0.5, 0, 0.5]}
+                key={1}
+              />
+            );
+          })}
         </Suspense>
+
         <Box
           scale={[29, 19, 19]}
           position={[0, 0, 0]}
-          color={[0, 0.6, 0.9]}
-          opacity={0.2}
+          color={[0, 0.5, 1]}
+          opacity={0.3}
         />
 
         <Plane
           color={[1, 1, 1]}
           size={[30, 20]}
           position={[0, 0, 10]}
-          opacity={0.3}
+          opacity={0.1}
         />
         <Plane
           color={[1, 1, 1]}
           size={[30, 20]}
           position={[0, 0, -10]}
-          opacity={0.3}
+          opacity={0.1}
         />
         <Plane
           color={[1, 1, 1]}
           size={[20, 20]}
           rotation={{ y: 3.14 / 2 }}
           position={[15, 0, 0]}
-          opacity={0.3}
+          opacity={0.1}
         />
         <Plane
           color={[1, 1, 1]}
           size={[20, 20]}
           rotation={{ y: 3.14 / 2 }}
           position={[-15, 0, 0]}
-          opacity={0.3}
+          opacity={0.1}
         />
         <Plane
           color={[0.5, 0.5, 0.5]}

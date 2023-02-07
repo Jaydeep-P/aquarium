@@ -1,12 +1,17 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useGraph } from "@react-three/fiber";
+import { clone } from "three/examples/jsm/utils/SkeletonUtils";
 
-export function Model(props) {
+export function ClownFishModel(props) {
   const group = useRef();
-  const { nodes, materials, animations } = useGLTF(
+  const { scene, materials, animations } = useGLTF(
     import.meta.env.BASE_URL + "assets/clownFish.glb"
   );
+
+  const clone1 = useMemo(() => clone(scene), [scene]);
+  const { nodes } = useGraph(clone1);
+
   const { actions, names } = useAnimations(animations, group);
 
   // useEffect(() => {
@@ -19,14 +24,12 @@ export function Model(props) {
   useEffect(() => {
     // names = "idle", "swim", "turningR", "turningL", "bite"
     let ind = 0;
-    actions[names[ind]].reset().play();
-    // return () => actions[names[ind]];
+    actions[names[ind]].reset().fadeIn(0.5).play();
+    return () => actions[names[ind]].fadeOut(0.5);
   }, [actions, names]);
 
   // useFrame((state, delta) => {
-  //   group.current.rotation.x = props.dir[0] * 3.141;
-  //   group.current.rotation.y = props.dir[1] * 3.141;
-  //   group.current.rotation.z = props.dir[2] * 3.141;
+
   //   props.setPos((prev) => {
   //     return [
   //       prev[0] + delta * props.dir[0],
