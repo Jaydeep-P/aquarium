@@ -5,6 +5,7 @@ import { OrbitControls } from "@react-three/drei";
 import { ClownFishModel } from "./components/ClownFishComponent";
 // import { GrayFishModel } from "./components/GrayFishComponent";
 import { DoubleSide } from "three";
+import Corals from "./components/Corals";
 
 function Sphere(props) {
   let time = Math.random() * 100;
@@ -86,13 +87,13 @@ function App() {
         <pointLight
           position={[10, 30, 10]}
           color={[1, 1, 1]}
-          intensity={0.5}
+          intensity={0.9}
           castShadow
         />
-        <ambientLight color={[1, 1, 1]} intensity={0.5} />
+        <ambientLight color={[1, 1, 1]} intensity={0.33} />
 
         <Suspense fallback={null}>
-          {new Array(20).fill(0).map((el, ind) => {
+          {new Array(7).fill(0).map((el, ind) => {
             return (
               <ClownFishModel
                 scale={0.15}
@@ -103,10 +104,14 @@ function App() {
                 ]}
                 rotation={[0, 3.1415 * Math.random(), 0]}
                 dir={[0.5, 0, 0.5]}
-                key={1}
+                key={ind}
               />
             );
           })}
+        </Suspense>
+
+        <Suspense fallback={null}>
+          <Corals dimensions={[29, 19, 19]} />
         </Suspense>
 
         <Box
