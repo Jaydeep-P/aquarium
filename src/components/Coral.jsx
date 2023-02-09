@@ -2,7 +2,9 @@ import React, { useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 
 export function Coral(props) {
-  const { nodes, materials } = useGLTF(`/assets/coral/Coral.glb`);
+  const { nodes, materials } = useGLTF(
+    import.meta.env.BASE_URL + `assets/coral/Coral.glb`
+  );
   //   console.log(materials.Coral);
   materials.Coral.color = {
     isColor: true,
@@ -18,4 +20,4 @@ export function Coral(props) {
   );
 }
 
-useGLTF.preload("/assets/coral/Coral.glb");
+useGLTF.preload(import.meta.env.BASE_URL + "assets/coral/Coral.glb");
