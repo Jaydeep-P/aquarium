@@ -1,25 +1,39 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { useFrame, useGraph } from "@react-three/fiber";
 import { clone } from "three/examples/jsm/utils/SkeletonUtils";
 
 export function ClownFishModel(props) {
+  let time = 0;
   const group = useRef();
+  const [dirSwitch, setDirSwitch] = useState(false);
+  const [radiusFac, setRadiusFac] = useState(0.01);
   const { scene, materials, animations } = useGLTF(
     import.meta.env.BASE_URL + "assets/clownFish.glb"
   );
-
   const clone1 = useMemo(() => clone(scene), [scene]);
   const { nodes } = useGraph(clone1);
 
   const { actions, names } = useAnimations(animations, group);
 
-  // useEffect(() => {
-  //   // names = "idle", "swim", "turningR", "turningL", "bite"
-  //   let ind = 1;
-  //   actions[names[ind]].reset().fadeIn(1).play();
-  //   // return () => actions[names[ind]].fadeOut(1);
-  // }, [actions, names]);
+  const [pos, setPos] = useState([0, 0, 0]);
+
+  const [rotY, setRotY] = useState(0);
+
+  useEffect(() => {
+    setRadiusFac(Math.random() * 0.005 + 0.005);
+    setPos([
+      20 * (Math.random() - 0.5),
+      Math.random() * 10 - 5,
+      10 * (Math.random() - 0.5),
+    ]);
+    let angle = Math.random() * 2 * 3.141;
+    setRotY(angle);
+  }, []);
+
+  useEffect(() => {
+    group.current.rotation.y = rotY;
+  }, [rotY]);
 
   useEffect(() => {
     // names = "idle", "swim", "turningR", "turningL", "bite"
@@ -28,19 +42,29 @@ export function ClownFishModel(props) {
     return () => actions[names[ind]].fadeOut(0.5);
   }, [actions, names]);
 
-  // useFrame((state, delta) => {
+  useFrame((state, delta) => {
+    if (rotY >= 2 * 3.141 || rotY < -2 * 3.141) {
+      setDirSwitch((prev) => !prev);
+      setRotY(0);
+      return;
+    }
+    setRotY((prev) => {
+      if (dirSwitch) return prev + radiusFac;
+      return prev - radiusFac;
+    });
+    setPos((prev) => {
+      return [
+        prev[0] + 0.01 * Math.sin(rotY),
+        prev[1],
+        prev[2] + 0.01 * Math.cos(rotY),
+      ];
+    });
 
-  //   props.setPos((prev) => {
-  //     return [
-  //       prev[0] + delta * props.dir[0],
-  //       prev[1] + delta * props.dir[1],
-  //       prev[2] + delta * props.dir[2],
-  //     ];
-  //   });
-  // });
+    // direction = [Math.sin(rotY),0,Math.cos(rotY)]
+  });
 
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} {...props} position={pos} dispose={null}>
       <group name="Sketchfab_Scene">
         <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>
           <group
