@@ -24,7 +24,7 @@ export function ClownFishModel(props) {
     setRadiusFac(Math.random() * 0.005 + 0.005);
     setPos([
       20 * (Math.random() - 0.5),
-      Math.random() * 10 - 5,
+      props.index * 10 - 5,
       10 * (Math.random() - 0.5),
     ]);
     let angle = Math.random() * 2 * 3.141;

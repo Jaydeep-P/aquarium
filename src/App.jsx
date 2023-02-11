@@ -59,7 +59,7 @@ function App() {
           autoRotate
           autoRotateSpeed={1}
           maxDistance={100}
-          minDistance={20}
+          minDistance={23}
           maxPolarAngle={(4 * 3.141) / 5}
           minPolarAngle={3.141 / 5}
         />
@@ -96,7 +96,7 @@ function App() {
 
         <Suspense>
           {new Array(20).fill(0).map((el, ind) => {
-            return <ClownFishModel scale={0.1} key={ind} />;
+            return <ClownFishModel scale={0.1} index={ind / 20} key={ind} />;
           })}
         </Suspense>
 
